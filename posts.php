@@ -1,15 +1,39 @@
 <?php include 'includes/header.php'; ?>
-<div class="blog-post">
-            <h2 class="blog-post-title">International PHP Conference 2014</h2>
-            <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pretium commodo felis vel ultrices. Etiam id dui eros. Praesent nunc dui, volutpat at eleifend nec, suscipit a sapien. Morbi leo urna, aliquam a purus eget, tempus cursus nisl. In hac habitasse platea dictumst. Aliquam pulvinar at lorem vel vulputate. Nunc tempus enim neque. Fusce justo nibh, volutpat eget auctor et, malesuada quis odio. Suspendisse convallis consequat lectus, ullamcorper consequat mauris luctus in. Suspendisse accumsan lorem varius tincidunt tristique. Ut nulla libero, feugiat vitae dui ac, dictum adipiscing libero. Sed sit amet augue mi. Nullam luctus ligula ultricies erat volutpat scelerisque. Etiam molestie sodales aliquam. Donec nisl odio, fringilla quis nibh quis, pulvinar ornare nibh. Integer lorem ligula, scelerisque ut felis et, pretium ultricies arcu.</p>
-           <a class="readmore" href="post.php?id=1">Read More</a>
+
+<?php
+  //Create DB Object
+  $db = new Database();
+  
+  //Check URL For Category
+  if(isset($_GET['category'])){
+    $category = $_GET['category'];
+    //Create Query
+    $query = "SELECT * FROM posts WHERE category = ".$category;
+    //Run Query
+    $posts = $db->select($query);
+  } else {
+    //Create Query
+    $query = "SELECT * FROM posts";
+    //Run Query
+    $posts = $db->select($query);
+  }
+  
+  //Create Query
+  $query = "SELECT * FROM categories";
+  //Run Query
+  $categories = $db->select($query);
+?>
+<?php if($posts) : ?>
+  <?php while($row = $posts->fetch_assoc()) : ?>
+    <div class="blog-post">
+            <h2 class="blog-post-title"><?php echo $row['title']; ?></h2>
+            <p class="blog-post-meta"><?php echo formatDate($row['date']); ?> by <a href="#"><?php echo $row['author']; ?></a></p>
+        <?php echo shortenText($row['body']); ?>
+           <a class="readmore" href="post.php?id=<?php echo urlencode($row['id']); ?>">Read More</a>
           </div><!-- /.blog-post -->
-      
-          <div class="blog-post">
-            <h2 class="blog-post-title">PHP 5.6.0beta4 Released</h2>
-            <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pretium commodo felis vel ultrices. Etiam id dui eros. Praesent nunc dui, volutpat at eleifend nec, suscipit a sapien. Morbi leo urna, aliquam a purus eget, tempus cursus nisl. In hac habitasse platea dictumst. Aliquam pulvinar at lorem vel vulputate. Nunc tempus enim neque. Fusce justo nibh, volutpat eget auctor et, malesuada quis odio. Suspendisse convallis consequat lectus, ullamcorper consequat mauris luctus in. Suspendisse accumsan lorem varius tincidunt tristique. Ut nulla libero, feugiat vitae dui ac, dictum adipiscing libero. Sed sit amet augue mi. Nullam luctus ligula ultricies erat volutpat scelerisque. Etiam molestie sodales aliquam. Donec nisl odio, fringilla quis nibh quis, pulvinar ornare nibh. Integer lorem ligula, scelerisque ut felis et, pretium ultricies arcu.</p>
-          <a class="readmore" href="post.php?id=1">Read More</a>
-      </div><!-- /.blog-post -->  
+  <?php endwhile; ?>    
+       
+<?php else : ?>
+  <p>There are no posts yet</p>
+<?php endif; ?>     
 <?php include 'includes/footer.php'; ?>

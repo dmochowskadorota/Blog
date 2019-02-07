@@ -1,7 +1,7 @@
 <?php
 	
 	//Format The Date
-	function formataDate($date) {
+	function formatDate($date) {
 		return date('F j Y, g:i a', strtotime($date));
 	}
 
